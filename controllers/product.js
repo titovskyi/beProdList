@@ -40,6 +40,8 @@ exports.getProducts = (req, res, next) => {
 exports.createProduct = (req, res, next) => {
   const listId = req.body.id;
   const prodName = req.body.productName;
+  const prodDep = req.body.department;
+  
   let currentList;
 
   List.findById(listId)
@@ -50,7 +52,8 @@ exports.createProduct = (req, res, next) => {
     .then(products => {
       if (!products.length) {
         return Product.create({
-          name: prodName
+          name: prodName,
+          department: prodDep
         });
       }
       return product;
@@ -66,5 +69,10 @@ exports.createProduct = (req, res, next) => {
         product: products[0]
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      if(!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
 };

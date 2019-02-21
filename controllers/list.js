@@ -10,7 +10,12 @@ exports.getLists = (req, res, next) => {
         lists: lists
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      if(!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
 };
 
 exports.getList = (req, res, next) => {
@@ -27,11 +32,17 @@ exports.getList = (req, res, next) => {
           });
         })
         .catch(err => {
-          console.log(err);
+          if(!err.statusCode) {
+            err.statusCode = 500;
+          }
+          next(err);
         });
     })
     .catch(err => {
-      console.log(err);
+      if(!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 }
 
@@ -47,7 +58,12 @@ exports.createList = (req, res, next) => {
         post: listName
       });
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      if(!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    })
 };
 
 exports.updateList = (req, res, next) => {
@@ -63,7 +79,12 @@ exports.updateList = (req, res, next) => {
         message: "List Updated",
       });
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      if(!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    })
 }
 
 exports.deleteList = (req, res, next) => {
@@ -77,7 +98,12 @@ exports.deleteList = (req, res, next) => {
         message: "List Deleted",
       });
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      if(!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    })
 }
 
 exports.changeState = (req, res, next) => {
@@ -102,9 +128,19 @@ exports.changeState = (req, res, next) => {
             })
           })
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          if(!err.statusCode) {
+            err.statusCode = 500;
+          }
+          next(err);
+        })
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      if(!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
 };
 
 exports.deleteFromList = (req, res, next) => {
@@ -117,5 +153,10 @@ exports.deleteFromList = (req, res, next) => {
       message: "Product Deleted From List",
     });
   })
-  .catch(err => console.log(err))
+  .catch(err => {
+    if(!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  })
 }

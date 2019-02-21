@@ -6,9 +6,11 @@ const app = express();
 
 const productRoutes = require("./routes/product");
 const listRoutes = require("./routes/list");
-const List = require('./models/list');
-const Product = require('./models/product');
-const ListProduct = require('./models/list-product');
+const authRoutes = require("./routes/auth");
+
+const List = require("./models/list");
+const Product = require("./models/product");
+const ListProduct = require("./models/list-product");
 
 app.use(bodyParser.json());
 
@@ -24,9 +26,18 @@ app.use((req, res, next) => {
 
 app.use(listRoutes);
 app.use(productRoutes);
+app.use(authRoutes);
 
-List.belongsToMany(Product, {through: ListProduct});
-Product.belongsToMany(List, {through: ListProduct});
+app.use((error, req, res, next) => {
+  console.log(error);
+  const status = error.statusCode || 500;
+  const message = error.message;
+  const data = error.data;
+  res.status(status).json({ message: message, data: data });
+});
+
+List.belongsToMany(Product, { through: ListProduct });
+Product.belongsToMany(List, { through: ListProduct });
 
 sequelize
   // .sync({force: true})
@@ -35,8 +46,8 @@ sequelize
     return List.findById(1);
   })
   .then(list => {
-    if(!list) {
-      return List.create({name: 'New List'})
+    if (!list) {
+      return List.create({ name: "New List" });
     }
     return list;
   })
