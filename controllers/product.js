@@ -1,14 +1,12 @@
 const List = require("../models/list");
 const Product = require("../models/product");
 
-
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
-    .then(products => {
-      res.status(200).json({
-        products: products
-      })
-    })
+  Product.findAll().then(products => {
+    res.status(200).json({
+      products: products
+    });
+  });
   // const listId = req.body.listId;
   // let currentList;
 
@@ -40,8 +38,8 @@ exports.getProducts = (req, res, next) => {
 exports.createProduct = (req, res, next) => {
   const listId = req.body.id;
   const prodName = req.body.productName;
-  const prodDep = req.body.department;
-  
+  let prodDep = req.body.department;
+
   let currentList;
 
   List.findById(listId)
@@ -50,19 +48,34 @@ exports.createProduct = (req, res, next) => {
       return Product.findAll({ where: { name: prodName } });
     })
     .then(products => {
+      console.log(products, "products");
       if (!products.length) {
+        if (prodDep === "another") {
+          prodDep = 'Другое';
+        }
         return Product.create({
           name: prodName,
           department: prodDep
         });
       }
-      return product;
+      if (products[0].department !== prodDep && prodDep !== "another") {
+        products[0].department = prodDep;
+        products[0].save();
+      }
+      if (prodDep === "another") {
+        products[0].department = "Другое";
+        products[0].save();
+      }
+      return products[0];
     })
     .then(prod => {
       return currentList.addProduct(prod, { through: { state: true } });
     })
     .then(createdProduct => {
-      return currentList.getProducts({where: {name: prodName}}, {through: {where: {listId: listId}}})
+      return currentList.getProducts(
+        { where: { name: prodName } },
+        { through: { where: { listId: listId } } }
+      );
     })
     .then(products => {
       res.status(201).json({
@@ -70,7 +83,7 @@ exports.createProduct = (req, res, next) => {
       });
     })
     .catch(err => {
-      if(!err.statusCode) {
+      if (!err.statusCode) {
         err.statusCode = 500;
       }
       next(err);
