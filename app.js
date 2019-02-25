@@ -11,6 +11,8 @@ const authRoutes = require("./routes/auth");
 const List = require("./models/list");
 const Product = require("./models/product");
 const ListProduct = require("./models/list-product");
+const User = require("./models/user");
+const UserList = require("./models/user-list");
 
 app.use(bodyParser.json());
 
@@ -33,24 +35,18 @@ app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
   const message = error.message;
   const data = error.data;
-  res.status(status).json({ message: message, data: data });
+  res.status(status).json({ error: message, data: data });
 });
 
 List.belongsToMany(Product, { through: ListProduct });
-Product.belongsToMany(List, { through: ListProduct });
+// Product.belongsToMany(List, { through: ListProduct });
+User.belongsToMany(List, {through: UserList});
+List.belongsToMany(User, {through: UserList});
+
 
 sequelize
   // .sync({force: true})
   .sync()
-  .then(res => {
-    return List.findById(1);
-  })
-  .then(list => {
-    if (!list) {
-      return List.create({ name: "New List" });
-    }
-    return list;
-  })
   .then(list => {
     app.listen(8080, () => {
       console.log("aaa");
