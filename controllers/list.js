@@ -4,20 +4,6 @@ const ListProduct = require("../models/list-product");
 const User = require("../models/user");
 
 exports.getLists = (req, res, next) => {
-  // User.getLists()
-  //   .then(lists => {
-  //     res.status(200).json({
-  //       lists: lists
-  //     });
-  //   })
-  //   .catch(err => {
-  //     if (!err.statusCode) {
-  //       err.statusCode = 500;
-  //     }
-  //     next(err);
-  //   });
-
-  console.log(req.userId);
   User.findById(req.userId)
     .then(user => {
       console.log(user, "currentusers");
@@ -35,27 +21,12 @@ exports.getLists = (req, res, next) => {
           next(err);
         })
     })
-
     .catch(err => {
       if (!err.statusCode) {
         err.statusCode = 500;
       }
       next(err);
     });
-
-  // List.findAll()
-  //   .then(lists => {
-  //     console.log(lists, 'currentlists');
-  //     res.status(200).json({
-  //       lists: lists
-  //     });
-  //   })
-  //   .catch(err => {
-  //     if (!err.statusCode) {
-  //       err.statusCode = 500;
-  //     }
-  //     next(err);
-  //   });
 };
 
 exports.getList = (req, res, next) => {
@@ -118,22 +89,6 @@ exports.createList = (req, res, next) => {
       }
       next(err);
     });
-
-  // List.create({
-  //   name: listName
-  // })
-  //   .then(result => {
-  //     res.status(201).json({
-  //       message: "List Created",
-  //       post: listName
-  //     });
-  //   })
-  //   .catch(err => {
-  //     if (!err.statusCode) {
-  //       err.statusCode = 500;
-  //     }
-  //     next(err);
-  //   });
 };
 
 exports.updateList = (req, res, next) => {

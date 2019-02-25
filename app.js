@@ -13,6 +13,7 @@ const Product = require("./models/product");
 const ListProduct = require("./models/list-product");
 const User = require("./models/user");
 const UserList = require("./models/user-list");
+const UserProduct = require("./models/user-product");
 
 app.use(bodyParser.json());
 
@@ -41,7 +42,7 @@ app.use((error, req, res, next) => {
 List.belongsToMany(Product, { through: ListProduct });
 // Product.belongsToMany(List, { through: ListProduct });
 User.belongsToMany(List, {through: UserList});
-List.belongsToMany(User, {through: UserList});
+User.belongsToMany(Product, {through: UserProduct});
 
 
 sequelize
