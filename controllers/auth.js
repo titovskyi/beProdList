@@ -44,11 +44,11 @@ exports.singup = (req, res, next) => {
 exports.login = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  console.log(email, 'user email');
+  console.log(email, "user email");
   let loadedUser;
   User.findOne({ where: { email: email } })
     .then(user => {
-      console.log(user, 'currentuser')
+      console.log(user, "currentuser");
       if (!user) {
         const error = new Error("Пользователь с таким email не найден");
         error.statusCode = 401;
@@ -68,17 +68,48 @@ exports.login = (req, res, next) => {
           email: loadedUser.email,
           userId: loadedUser.id
         },
-        "sashkatitov",
-        { expiresIn: "1h" }
+        "sashkatitov"
       );
-      res
-        .status(200)
-        .json({
-          email: loadedUser.email,
-          userId: loadedUser.id,
-          userLogin: loadedUser.login,
-          token: token
+      loadedUser.userToken = token;
+      loadedUser
+        .save()
+        .then(() => {
+          res.status(200).json({
+            email: loadedUser.email,
+            userId: loadedUser.id,
+            userLogin: loadedUser.login,
+            userToken: loadedUser.userToken
+          });
+        })
+        .catch(err => {
+          if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+          next(err);
         });
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+exports.checkToken = (req, res, next) => {
+  User.findById(req.userId)
+    .then(user => {
+      if(!user) {
+        const error = new Error('Авторизуйтесь.');
+        error.statusCode = 401;
+        throw error;
+      }
+      res.status(200).json({
+        email: user.email,
+        userId: user.id,
+        userLogin: user.login,
+        userToken: user.userToken
+      });
     })
     .catch(err => {
       if (!err.statusCode) {

@@ -3,6 +3,7 @@ const { body } = require("express-validator/check");
 const User = require("../models/user");
 const authController = require('../controllers/auth');
 const router = express.Router();
+const isAuth = require('../middleware/is-auth');
 
 router.put("/singup", [
   body("email")
@@ -22,5 +23,6 @@ router.put("/singup", [
 ], authController.singup);
 
 router.post('/login',  authController.login);
+router.get('/check-login', isAuth, authController.checkToken);
 
 module.exports = router;
