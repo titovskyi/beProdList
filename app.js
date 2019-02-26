@@ -42,7 +42,8 @@ app.use((error, req, res, next) => {
 List.belongsToMany(Product, { through: ListProduct });
 // Product.belongsToMany(List, { through: ListProduct });
 User.belongsToMany(List, {through: UserList});
-User.belongsToMany(Product, {through: UserProduct});
+// User.belongsToMany(Product, {through: UserProduct});
+User.hasMany(Product);
 
 
 sequelize

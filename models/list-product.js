@@ -12,9 +12,6 @@ const ListProduct = sequelize.define('listProduct', {
   state: {
     type: Sequelize.BOOLEAN,
     allowNull: false
-  },
-  department: {
-    type: Sequelize.STRING
   }
 })
 

@@ -16,8 +16,7 @@ router.put("/singup", [
             return Promise.reject('email уже существует.');
           }
         });
-    })
-    .normalizeEmail(),
+    }),
   body('password').trim().isLength({min: 5}),
   body('login').trim().not().isEmpty()
 ], authController.singup);

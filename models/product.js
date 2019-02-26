@@ -12,6 +12,9 @@ const Product = sequelize.define('product', {
   name: {
     type: Sequelize.STRING,
     allowNull: false
+  },
+  department: {
+    type: Sequelize.STRING
   }
 });
 
