@@ -6,10 +6,8 @@ const User = require("../models/user");
 exports.getLists = (req, res, next) => {
   User.findById(req.userId)
     .then(user => {
-      console.log(user, "currentusers");
       return user.getLists()
         .then(lists => {
-          console.log(lists, "currentlists");
           res.status(200).json({
             lists: lists
           });

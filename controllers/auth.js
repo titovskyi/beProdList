@@ -6,8 +6,9 @@ const jwt = require("jsonwebtoken");
 exports.singup = (req, res, next) => {
   console.log(req);
   const errors = validationResult(req);
+  let error;
   if (!errors.isEmpty()) {
-    const error = new Error("Validation failed.");
+    error = new Error("Validation failed.");
     error.status = 422;
     error.data = errors.array();
     throw error;
@@ -23,8 +24,7 @@ exports.singup = (req, res, next) => {
       return User.create({
         login: login,
         email: email,
-        password: hashedPw,
-        status: "I am new!"
+        password: hashedPw
       });
     })
     .then(result => {
@@ -35,7 +35,10 @@ exports.singup = (req, res, next) => {
     })
     .catch(err => {
       if (!err.statusCode) {
-        err.statusCode = 500;
+        const error = new Error("Проблемы с сервером, попробуйте позже!");
+        error.data = [{msg: "Проблемы с сервером, попробуйте позже!"}]
+        error.statusCode = 500;
+        throw error;
       }
       next(err);
     });
@@ -48,9 +51,9 @@ exports.login = (req, res, next) => {
   let loadedUser;
   User.findOne({ where: { email: email } })
     .then(user => {
-      console.log(user, "currentuser");
       if (!user) {
         const error = new Error("Пользователь с таким email не найден");
+        error.data = [{msg: "Пользователь с таким email не найден"}];
         error.statusCode = 401;
         throw error;
       }
@@ -60,6 +63,7 @@ exports.login = (req, res, next) => {
     .then(isEqual => {
       if (!isEqual) {
         const error = new Error("Неверный пароль");
+        error.data = [{msg: "Неверный пароль"}]
         error.statusCode = 401;
         throw error;
       }
@@ -83,7 +87,10 @@ exports.login = (req, res, next) => {
         })
         .catch(err => {
           if (!err.statusCode) {
-            err.statusCode = 500;
+            const error = new Error("Проблемы с сервером, попробуйте позже!");
+            error.data = [{msg: "Проблемы с сервером, попробуйте позже!"}]
+            error.statusCode = 401;
+            throw error;
           }
           next(err);
         });

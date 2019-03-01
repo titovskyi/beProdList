@@ -2,13 +2,17 @@ const Sequelize = require('sequelize');
 
 const sequelize = require('../util/database');
 
-const UserProduct = sequelize.define('userProduct', {
+const Friendship = sequelize.define('friendship', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true
+  },
+  friendEmail: {
+    type: Sequelize.STRING,
+    allowNull: false
   }
 })
 
-module.exports = UserProduct;
+module.exports = Friendship;
