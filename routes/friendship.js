@@ -23,5 +23,7 @@ router.post("/friend",
   isAuth,
   friendshipController.createFriend
 );
+router.post('/share-list', friendshipController.shareList);
+router.delete('/delete-friend', isAuth, friendshipController.deleteFriend);
 
 module.exports = router;
